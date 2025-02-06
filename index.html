@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Sentence Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+            background-color: #f0f0f0;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        .sentence {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4CAF50;
+            margin-top: 20px;
+        }
+        .container {
+            margin-top: 20px;
+        }
+        .reload-btn {
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .reload-btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Random Sentence</h1>
+    <div class="sentence" id="random-sentence">Loading...</div>
+    <div class="container">
+        <button class="reload-btn" onclick="getRandomSentence()">Get New Sentence</button>
+    </div>
+
+    <script>
+        // Array of sentences you want to display randomly
+        const sentences = [
+            "Learning a new word every day is a great way to improve your vocabulary.",
+            "Programming is a fun skill to learn and a powerful tool for problem solving.",
+            "Consistency is the key to mastering any new skill.",
+            "Reading a variety of books can expand your horizons.",
+            "The more you practice, the better you get at it.",
+            "Challenge yourself with something new every day.",
+            "Success is the sum of small efforts, repeated day in and day out.",
+            "The journey of a thousand miles begins with one step.",
+            "Hard work beats talent when talent doesn't work hard."
+        ];
+
+        // Function to get a random sentence from the array
+        function getRandomSentence() {
+            const randomIndex = Math.floor(Math.random() * sentences.length);
+            document.getElementById('random-sentence').innerText = sentences[randomIndex];
+        }
+
+        // Get a random sentence when the page loads
+        window.onload = getRandomSentence;
+    </script>
+
+</body>
+</html>
