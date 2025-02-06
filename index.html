@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project manager words</title>
+    <title>Project Manager Flashcards</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -15,59 +15,74 @@
         h1 {
             color: #333;
         }
-        .sentence {
+        .flashcard {
             font-size: 24px;
             font-weight: bold;
             color: #4CAF50;
             margin-top: 20px;
+            min-height: 50px;
         }
         .container {
             margin-top: 20px;
         }
-        .reload-btn {
+        .btn {
             padding: 10px 20px;
             font-size: 18px;
+            margin: 10px;
             background-color: #4CAF50;
             color: white;
             border: none;
             cursor: pointer;
             border-radius: 5px;
         }
-        .reload-btn:hover {
+        .btn:hover {
             background-color: #45a049;
         }
     </style>
 </head>
 <body>
 
-    <h1>Random Sentence</h1>
-    <div class="sentence" id="random-sentence">Loading...</div>
+    <h1>Project Manager Flashcards</h1>
+    <div class="flashcard" id="flashcard">Loading question...</div>
     <div class="container">
-        <button class="reload-btn" onclick="getRandomSentence()">Get New Sentence</button>
+        <button class="btn" onclick="showAnswer()" id="answer-btn">Show Answer</button>
+        <button class="btn" onclick="getNewQuestion()">New Question</button>
     </div>
 
     <script>
-        // Array of sentences you want to display randomly
-        const sentences = [
-            "agile project management- Approach in project management where the customer gets value from the project sooner because the project is completed in iterations.",
-            "brainstorming- Free flow of ideas to identify possible project strategies.",
-            "goal- End result of the project; drives all aspects of the project.",
-            "project management- Applying knowledge, skills, tools, and techniques to achieve a project’s objectives.",
-            "project management life cycle- Defined by the Project Management Institute; included initiating, planning, executing, monitoring, and controlling and the closing process.",
-            "project scope- Approach you choose and the success criteria you have to meet.",
-            "quality objective- Goals for the project that establish how good the project’s end results must be.",
-            "traditional project management-When each project management process group occurs one after another; also known as the waterfall approach.",
-            "stakeholder- Anyone who has an interest or stake in the outcome of a project."
+        // Array of flashcards with terms and definitions
+        const flashcards = [
+            { term: "Agile Project Management", definition: "An approach where the customer gets value sooner as the project is completed in iterations." },
+            { term: "Brainstorming", definition: "A free flow of ideas to identify possible project strategies." },
+            { term: "Goal", definition: "The end result of the project; drives all aspects of the project." },
+            { term: "Project Management", definition: "Applying knowledge, skills, tools, and techniques to achieve a project’s objectives." },
+            { term: "Project Management Life Cycle", definition: "Includes initiating, planning, executing, monitoring, controlling, and closing processes." },
+            { term: "Project Scope", definition: "The approach you choose and the success criteria you must meet." },
+            { term: "Quality Objective", definition: "Goals that establish how good the project’s end results must be." },
+            { term: "Traditional Project Management", definition: "When each process group occurs sequentially; also known as the waterfall approach." },
+            { term: "Stakeholder", definition: "Anyone who has an interest or stake in the outcome of a project." }
         ];
 
-        // Function to get a random sentence from the array
-        function getRandomSentence() {
-            const randomIndex = Math.floor(Math.random() * sentences.length);
-            document.getElementById('random-sentence').innerText = sentences[randomIndex];
+        let currentFlashcard = null;
+
+        // Function to get a new random question and immediately display it
+        function getNewQuestion() {
+            const randomIndex = Math.floor(Math.random() * flashcards.length);
+            currentFlashcard = flashcards[randomIndex];
+            document.getElementById('flashcard').innerText = currentFlashcard.term;
+            document.getElementById('answer-btn').disabled = false; // Enable answer button
         }
 
-        // Get a random sentence when the page loads
-        window.onload = getRandomSentence;
+        // Function to show the answer (definition)
+        function showAnswer() {
+            if (currentFlashcard) {
+                document.getElementById('flashcard').innerText = currentFlashcard.definition;
+                document.getElementById('answer-btn').disabled = true; // Disable answer button after showing answer
+            }
+        }
+
+        // Load a new question when the page loads
+        window.onload = getNewQuestion;
     </script>
 
 </body>
