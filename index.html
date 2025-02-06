@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Manager Flashcards</title>
+    <title>Interactive Flashcards</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -20,69 +20,193 @@
             font-weight: bold;
             color: #4CAF50;
             margin-top: 20px;
-            min-height: 50px;
         }
-        .container {
-            margin-top: 20px;
-        }
-        .btn {
+        .button {
             padding: 10px 20px;
             font-size: 18px;
-            margin: 10px;
             background-color: #4CAF50;
             color: white;
             border: none;
             cursor: pointer;
             border-radius: 5px;
+            margin: 5px;
         }
-        .btn:hover {
+        .button:hover {
             background-color: #45a049;
+        }
+        .container {
+            margin-top: 20px;
+        }
+        input, textarea {
+            width: 80%;
+            padding: 10px;
+            margin: 5px;
+            font-size: 16px;
+        }
+        .flashcard-list {
+            margin-top: 20px;
+            cursor: pointer;
+            color: green;
+            text-decoration: underline;
+        }
+        .hidden {
+            display: none;
+        }
+        .flashcard-item {
+            background: white;
+            margin: 5px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .delete-btn {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 5px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+        .edit-btn {
+            background-color: orange;
+            color: white;
+            border: none;
+            padding: 5px;
+            cursor: pointer;
+            border-radius: 3px;
         }
     </style>
 </head>
 <body>
 
-    <h1>Project Manager Flashcards</h1>
-    <div class="flashcard" id="flashcard">Loading question...</div>
+    <h1>Interactive Flashcards</h1>
+    <div class="flashcard" id="flashcard">Loading...</div>
+
     <div class="container">
-        <button class="btn" onclick="showAnswer()" id="answer-btn">Show Answer</button>
-        <button class="btn" onclick="getNewQuestion()">New Question</button>
+        <button class="button" onclick="showAnswer()">Show Answer</button>
+        <button class="button" onclick="getNewQuestion()">New Question</button>
     </div>
 
-    <script>
-        // Array of flashcards with terms and definitions
-        const flashcards = [
-            { term: "Agile Project Management", definition: "An approach where the customer gets value sooner as the project is completed in iterations." },
-            { term: "Brainstorming", definition: "A free flow of ideas to identify possible project strategies." },
-            { term: "Goal", definition: "The end result of the project; drives all aspects of the project." },
-            { term: "Project Management", definition: "Applying knowledge, skills, tools, and techniques to achieve a project’s objectives." },
-            { term: "Project Management Life Cycle", definition: "Includes initiating, planning, executing, monitoring, controlling, and closing processes." },
-            { term: "Project Scope", definition: "The approach you choose and the success criteria you must meet." },
-            { term: "Quality Objective", definition: "Goals that establish how good the project’s end results must be." },
-            { term: "Traditional Project Management", definition: "When each process group occurs sequentially; also known as the waterfall approach." },
-            { term: "Stakeholder", definition: "Anyone who has an interest or stake in the outcome of a project." }
-        ];
+    <h2>Add a New Flashcard</h2>
+    <input type="text" id="new-term" placeholder="Enter question">
+    <textarea id="new-definition" placeholder="Enter answer"></textarea>
+    <button class="button" onclick="addFlashcard()">Add Flashcard</button>
 
+    <div class="flashcard-list" onclick="toggleFlashcardList()">Show Flashcards ▼</div>
+    <div id="flashcard-container" class="hidden"></div>
+
+    <script>
+        let flashcards = [];
         let currentFlashcard = null;
 
-        // Function to get a new random question and immediately display it
-        function getNewQuestion() {
-            const randomIndex = Math.floor(Math.random() * flashcards.length);
-            currentFlashcard = flashcards[randomIndex];
-            document.getElementById('flashcard').innerText = currentFlashcard.term;
-            document.getElementById('answer-btn').disabled = false; // Enable answer button
-        }
+        // Load flashcards from localStorage
+        function loadFlashcards() {
+            const savedFlashcards = localStorage.getItem("flashcards");
+            if (savedFlashcards) {
+                flashcards = JSON.parse(savedFlashcards);
+            }
 
-        // Function to show the answer (definition)
-        function showAnswer() {
-            if (currentFlashcard) {
-                document.getElementById('flashcard').innerText = currentFlashcard.definition;
-                document.getElementById('answer-btn').disabled = true; // Disable answer button after showing answer
+            // If no flashcards exist, add default ones
+            if (flashcards.length === 0) {
+                flashcards = [
+                    { term: "Agile Project Management", definition: "An approach where the customer gets value sooner as the project is completed in iterations." },
+                    { term: "Brainstorming", definition: "A free flow of ideas to identify possible project strategies." },
+                    { term: "Goal", definition: "The end result of the project; drives all aspects of the project." }
+                ];
+                saveFlashcards();
             }
         }
 
-        // Load a new question when the page loads
-        window.onload = getNewQuestion;
+        // Save flashcards to localStorage
+        function saveFlashcards() {
+            localStorage.setItem("flashcards", JSON.stringify(flashcards));
+        }
+
+        // Get a random question
+        function getNewQuestion() {
+            if (flashcards.length === 0) {
+                document.getElementById('flashcard').innerText = "No flashcards available.";
+                return;
+            }
+            const randomIndex = Math.floor(Math.random() * flashcards.length);
+            currentFlashcard = flashcards[randomIndex];
+            document.getElementById('flashcard').innerText = currentFlashcard.term;
+        }
+
+        // Show the answer
+        function showAnswer() {
+            if (currentFlashcard) {
+                document.getElementById('flashcard').innerText = currentFlashcard.definition;
+            }
+        }
+
+        // Add a new flashcard
+        function addFlashcard() {
+            let term = document.getElementById('new-term').value.trim();
+            let definition = document.getElementById('new-definition').value.trim();
+
+            if (term === "" || definition === "") {
+                alert("Both question and answer are required.");
+                return;
+            }
+
+            flashcards.push({ term, definition });
+            saveFlashcards();
+            document.getElementById('new-term').value = "";
+            document.getElementById('new-definition').value = "";
+            alert("Flashcard added!");
+            loadFlashcardList();
+        }
+
+        // Load flashcard list
+        function loadFlashcardList() {
+            let container = document.getElementById("flashcard-container");
+            container.innerHTML = "";
+            flashcards.forEach((flashcard, index) => {
+                let cardDiv = document.createElement("div");
+                cardDiv.className = "flashcard-item";
+                cardDiv.innerHTML = `
+                    <strong>Q:</strong> ${flashcard.term} <br>
+                    <strong>A:</strong> ${flashcard.definition} <br>
+                    <button class="edit-btn" onclick="editFlashcard(${index})">Edit</button>
+                    <button class="delete-btn" onclick="deleteFlashcard(${index})">Delete</button>
+                `;
+                container.appendChild(cardDiv);
+            });
+        }
+
+        // Edit flashcard
+        function editFlashcard(index) {
+            let newTerm = prompt("Edit Question:", flashcards[index].term);
+            let newDefinition = prompt("Edit Answer:", flashcards[index].definition);
+
+            if (newTerm !== null && newDefinition !== null) {
+                flashcards[index] = { term: newTerm.trim(), definition: newDefinition.trim() };
+                saveFlashcards();
+                loadFlashcardList();
+            }
+        }
+
+        // Delete flashcard
+        function deleteFlashcard(index) {
+            if (confirm("Are you sure you want to delete this flashcard?")) {
+                flashcards.splice(index, 1);
+                saveFlashcards();
+                loadFlashcardList();
+            }
+        }
+
+        // Toggle flashcard list visibility
+        function toggleFlashcardList() {
+            let container = document.getElementById("flashcard-container");
+            container.classList.toggle("hidden");
+        }
+
+        // Initialize the flashcards when the page loads
+        window.onload = function () {
+            loadFlashcards();
+            getNewQuestion();
+            loadFlashcardList();
+        };
     </script>
 
 </body>
